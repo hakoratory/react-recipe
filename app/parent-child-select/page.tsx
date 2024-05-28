@@ -80,7 +80,7 @@ const subSubItems = [
   },
 ]
 
-export default function RecursiveInput() {
+export default function ParentChildSelect() {
   const [selectedItemId, setSelectedItemId] = useState<string>('')
   const [selectedSubItemId, setSelectedSubItemId] = useState<string>('')
   const [selectedSubSubItemId, setSelectedSubSubItemId] = useState<string>('')
