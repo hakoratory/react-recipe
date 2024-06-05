@@ -3,7 +3,7 @@ import {Box} from "@mui/material";
 import {ChangeEvent, useEffect, useState} from "react";
 import useSWR from "swr";
 
-const isUseMockData = false
+const isUseMockData = true
 
 const useFetch = (url: string, param: any) => {
   const [data, setData] = useState<any>(null)
@@ -44,14 +44,13 @@ const useReFetch = (url: string, param: any) => {
 
   const get = async () => {
     if (isUseMockData) {
-      setData({
+      return {
         id: 1,
         name: 'taro'
-      })
+      }
     } else {
       const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-      const json = await response.json()
-      setData(json)
+      return await response.json()
 
     }
   }
@@ -140,7 +139,10 @@ const subSubItems = [
 export default function ParentChildSelect() {
   const [datas, get] = useReFetch('', {})
   useEffect(() => {
-    console.log('get', get())
+    (async () => {
+      const result = await get()
+      console.log('result', result)
+    })()
   }, [])
 
   useEffect(() => {
