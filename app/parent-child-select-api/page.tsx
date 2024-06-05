@@ -1,7 +1,63 @@
 'use client'
-import useSWR from "swr";
 import {Box} from "@mui/material";
 import {ChangeEvent, useEffect, useState} from "react";
+import useSWR from "swr";
+
+const isUseMockData = false
+
+const useFetch = (url: string, param: any) => {
+  const [data, setData] = useState<any>(null)
+  useEffect(() => {
+    if (isUseMockData) {
+      setData({
+        id: 1,
+        name: 'taro'
+      })
+    } else {
+      (async () => {
+        // fetch('https://jsonplaceholder.typicode.com/todos/1')
+        //   .then(response => response.json())
+        //   .then(json => setData(json))
+        const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+        const json = await response.json()
+      })()
+    }
+  },[])
+  return data
+}
+
+const useReFetch = (url: string, param: any) => {
+  const [data, setData] = useState<any>(null)
+  useEffect(() => {
+    if (isUseMockData) {
+      setData({
+        id: 1,
+        name: 'taro'
+      })
+    } else {
+      (async () => {
+        const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+        const json = await response.json()
+      })()
+    }
+  },[])
+
+  const get = async () => {
+    if (isUseMockData) {
+      setData({
+        id: 1,
+        name: 'taro'
+      })
+    } else {
+      const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+      const json = await response.json()
+      setData(json)
+
+    }
+  }
+
+  return [data, get]
+}
 
 // 大項目
 const items = [
@@ -82,6 +138,15 @@ const subSubItems = [
 ]
 
 export default function ParentChildSelect() {
+  const [datas, get] = useReFetch('', {})
+  useEffect(() => {
+    console.log('get', get())
+  }, [])
+
+  useEffect(() => {
+    console.log('datas', datas);
+  },[datas])
+
   const [selectedItemId, setSelectedItemId] = useState<string>('')
   const [selectedSubItemId, setSelectedSubItemId] = useState<string>('')
   const [selectedSubSubItemId, setSelectedSubSubItemId] = useState<string>('')
