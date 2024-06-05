@@ -1,77 +1,41 @@
 'use client'
 import {Box} from "@mui/material";
-import {ChangeEvent, useEffect, useState} from "react";
-import useSWR from "swr";
+import {ChangeEvent, FormEvent, useEffect, useState} from "react";
 
-const isUseMockData = false
+const isUseMockData = true
 
-const useFetch = (url: string, param: any) => {
-  const [data, setData] = useState<any>(null)
-  useEffect(() => {
-    if (isUseMockData) {
-      setData({
-        id: 1,
-        name: 'taro'
-      })
-    } else {
-      (async () => {
-        // fetch('https://jsonplaceholder.typicode.com/todos/1')
-        //   .then(response => response.json())
-        //   .then(json => setData(json))
-        const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-        const json = await response.json()
-      })()
-    }
-  },[])
-  return data
+type FetchItemsRequestType = {
+  parentId: number | null
 }
 
-const useReFetch = (url: string, param: any) => {
-  const [data, setData] = useState<any>(null)
-  useEffect(() => {
-    if (isUseMockData) {
-      setData({
-        id: 1,
-        name: 'taro'
-      })
-    } else {
-      (async () => {
-        const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-        const json = await response.json()
-      })()
-    }
-  },[])
+type ItemType = {
+  id: number,
+  parentId: number | null,
+  value: string
+}
 
-  const get = async () => {
-    if (isUseMockData) {
-      setData({
-        id: 1,
-        name: 'taro'
-      })
-    } else {
-      const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-      const json = await response.json()
-      setData(json)
-
-    }
+const fetchItems = async (url: string, param: FetchItemsRequestType): Promise<Array<ItemType>> => {
+  if (isUseMockData) {
+    return items.filter(item => item.parentId === param.parentId)
+  } else {
+    const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+    return await response.json()
   }
-
-  return [data, get]
 }
 
 // 大項目
-const items = [
+const items: Array<ItemType> = [
   {
     id: 1,
+    parentId: null,
     value: 'item-1'
   },
   {
     id: 2,
+    parentId: null,
     value: 'item-2'
   },
-]
-// 中項目
-const subItems = [
+  // 中項目
   {
     id: 3,
     parentId: 1,
@@ -92,9 +56,7 @@ const subItems = [
     parentId: 2,
     value: 'item-2-2'
   },
-]
-// 小項目
-const subSubItems = [
+  // 小項目
   {
     id: 7,
     parentId: 3,
@@ -137,105 +99,96 @@ const subSubItems = [
   },
 ]
 
+
 export default function ParentChildSelect() {
-  const [datas, get] = useReFetch('', {})
+  const [items, setItems] = useState<Array<ItemType>>([])
+  const [subItems, setSubItems] = useState<Array<ItemType>>([])
+  const [subSubItems, setSubSubItems] = useState<Array<ItemType>>([])
+
   useEffect(() => {
-    console.log('get', get())
+    (async () => {
+      const newItems = await fetchItems('/items', { parentId: null })
+      console.log('newItems', newItems)
+      setItems(newItems)
+    })()
   }, [])
 
-  useEffect(() => {
-    console.log('datas', datas);
-  },[datas])
 
-  const [selectedItemId, setSelectedItemId] = useState<string>('')
-  const [selectedSubItemId, setSelectedSubItemId] = useState<string>('')
-  const [selectedSubSubItemId, setSelectedSubSubItemId] = useState<string>('')
-
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, error, isValidating, mutate } = useSWR('/items', fetcher, {
-    revalidateOnFocus: false,
-    shouldRetryOnError: false,
-    revalidateOnMount: false,
-  });
-
-  useEffect(() => {
-    console.log('data', data)
-  },[data])
-
-  const handleChangeItem = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedItemId(event.target.value)
-    setSelectedSubItemId('')
-    setSelectedSubSubItemId('')
+  const handleChangeItem = async (event: ChangeEvent<HTMLSelectElement>) => {
+    const newSubItem = await fetchItems('/items', { parentId: parseInt(event.target.value) })
+    setSubItems(newSubItem)
+    setSubSubItems([])
   }
 
-  const handleChangeSubItem = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSubItemId(event.target.value)
-    setSelectedSubSubItemId('')
+  const handleChangeSubItem = async (event: ChangeEvent<HTMLSelectElement>) => {
+    const newSubSubItem = await fetchItems('/items', { parentId: parseInt(event.target.value) })
+    setSubSubItems(newSubSubItem)
   }
 
-  const handleChangeSubSubItem = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSubSubItemId(event.target.value)
-  }
-
-  const onClick = async () => {
-    //mutate()
-    const test = await fetch('/items')
-    console.log('test', test)
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const item = form.get("item") || "";
+    const subItem = form.get("subItem") || "";
+    const subSubItem = form.get("subSubItem") || "";
+    alert(
+      `item: ${item}\nsubItem: ${subItem}\nsubSubItem: ${subSubItem}`
+    );
   }
 
   return (
     <main>
       <Box mt={2} ml={2}>
-        <button type="button" onClick={onClick}>test</button>
-        <Box>
+        <form onSubmit={onSubmit}>
+          <button type="submit">test</button>
           <Box>
-            大項目
-          </Box>
-          <Box>
-            <select className="w-40" onChange={handleChangeItem}>
-              <option value=""></option>
-              {
-                items.map(item => (
-                  <option key={item.id} value={item.id}>{item.value}</option>
-                ))
-              }
-            </select>
-          </Box>
-        </Box>
-        <Box mt={2}>
-          <Box>
-            中項目
-          </Box>
-          <Box>
-            <select className="w-40" onChange={handleChangeSubItem}>
-              <option value=""></option>
-              {
-                subItems.filter(subItem => subItem.parentId === parseInt(selectedItemId))
-                  .map(subItem => (
-                    <option key={subItem.id} value={subItem.id}>{subItem.value}</option>
+            <Box>
+              大項目
+            </Box>
+            <Box>
+              <select className="w-40" onChange={handleChangeItem} name="item">
+                <option value=""></option>
+                {
+                  items.map(item => (
+                    <option key={item.id} value={item.id}>{item.value}</option>
                   ))
-              }
-            </select>
+                }
+              </select>
+            </Box>
           </Box>
-        </Box>
-        <Box mt={2}>
-          <Box>
-            小項目
+          <Box mt={2}>
+            <Box>
+              中項目
+            </Box>
+            <Box>
+              <select className="w-40" onChange={handleChangeSubItem} name="subItem">
+                <option value=""></option>
+                {
+                  subItems.map(subItem => (
+                      <option key={subItem.id} value={subItem.id}>{subItem.value}</option>
+                    ))
+                }
+              </select>
+            </Box>
           </Box>
-          <Box>
-            <select className="w-40" onChange={handleChangeSubSubItem}>
-              <option value=""></option>
-              {
-                subSubItems.filter(subSubItem => subSubItem.parentId === parseInt(selectedSubItemId))
-                  .map(subSubItem => (
-                    <option key={subSubItem.id} value={subSubItem.id}>{subSubItem.value}</option>
-                  ))
-              }
-            </select>
+          <Box mt={2}>
+            <Box>
+              小項目
+            </Box>
+            <Box>
+              <select className="w-40" name="subSubItem">
+                <option value=""></option>
+                {
+                  subSubItems.map(subSubItem => (
+                      <option key={subSubItem.id} value={subSubItem.id}>{subSubItem.value}</option>
+                    ))
+                }
+              </select>
+            </Box>
           </Box>
-        </Box>
+        </form>
       </Box>
-      <Box mt={6} ml={2}>
+      {/*<Box mt={6} ml={2}>
         <Box>デバッグセクション</Box>
         <Box mt={2}>
           <Box>大項目の value</Box>
@@ -269,7 +222,7 @@ export default function ParentChildSelect() {
             }
           </Box>
         </Box>
-      </Box>
+      </Box>*/}
     </main>
   );
 }
