@@ -4,7 +4,7 @@ import {ChangeEvent, FormEvent, useEffect, useState} from "react";
 import {parentChildSelectItems} from "@/data/data";
 import {FetchItemsRequestType, ParentChildSelectItem} from "@/types/parent-child-select"
 
-const isUseMockData = false
+const isUseMockData = true
 
 const fetchItems = async (param: FetchItemsRequestType): Promise<Array<ParentChildSelectItem>> => {
   if (isUseMockData) {
