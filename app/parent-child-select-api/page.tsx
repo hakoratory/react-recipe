@@ -1,127 +1,45 @@
 'use client'
-import {Box} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import {ChangeEvent, FormEvent, useEffect, useState} from "react";
+import {parentChildSelectItems} from "@/data/data";
+import {FetchItemsRequestType, ParentChildSelectItem} from "@/types/parent-child-select"
 
-const isUseMockData = true
+const isUseMockData = false
 
-type FetchItemsRequestType = {
-  parentId: number | null
-}
-
-type ItemType = {
-  id: number,
-  parentId: number | null,
-  value: string
-}
-
-const fetchItems = async (url: string, param: FetchItemsRequestType): Promise<Array<ItemType>> => {
+const fetchItems = async (param: FetchItemsRequestType): Promise<Array<ParentChildSelectItem>> => {
   if (isUseMockData) {
-    return items.filter(item => item.parentId === param.parentId)
+    return parentChildSelectItems.filter(item => item.parentId === param.parentId)
   } else {
-    const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-    return await response.json()
+    const response = await fetch('/api/parent-child-select/items', {
+      method: 'POST',
+      body: JSON.stringify(param)
+    })
+    const {items} = await response.json()
+    return items
   }
 }
 
-// 大項目
-const items: Array<ItemType> = [
-  {
-    id: 1,
-    parentId: null,
-    value: 'item-1'
-  },
-  {
-    id: 2,
-    parentId: null,
-    value: 'item-2'
-  },
-  // 中項目
-  {
-    id: 3,
-    parentId: 1,
-    value: 'item-1-1'
-  },
-  {
-    id: 4,
-    parentId: 1,
-    value: 'item-1-2'
-  },
-  {
-    id: 5,
-    parentId: 2,
-    value: 'item-2-1'
-  },
-  {
-    id: 6,
-    parentId: 2,
-    value: 'item-2-2'
-  },
-  // 小項目
-  {
-    id: 7,
-    parentId: 3,
-    value: 'item-1-1-1'
-  },
-  {
-    id: 8,
-    parentId: 3,
-    value: 'item-1-1-2'
-  },
-  {
-    id: 9,
-    parentId: 4,
-    value: 'item-1-2-1'
-  },
-  {
-    id: 10,
-    parentId: 4,
-    value: 'item-1-2-2'
-  },
-  {
-    id: 11,
-    parentId: 5,
-    value: 'item-2-1-1'
-  },
-  {
-    id: 12,
-    parentId: 5,
-    value: 'item-2-1-2'
-  },
-  {
-    id: 13,
-    parentId: 5,
-    value: 'item-2-2-1'
-  },
-  {
-    id: 14,
-    parentId: 5,
-    value: 'item-2-2-2'
-  },
-]
-
-
 export default function ParentChildSelect() {
-  const [items, setItems] = useState<Array<ItemType>>([])
-  const [subItems, setSubItems] = useState<Array<ItemType>>([])
-  const [subSubItems, setSubSubItems] = useState<Array<ItemType>>([])
+  const [items, setItems] = useState<Array<ParentChildSelectItem>>([])
+  const [subItems, setSubItems] = useState<Array<ParentChildSelectItem>>([])
+  const [subSubItems, setSubSubItems] = useState<Array<ParentChildSelectItem>>([])
 
   useEffect(() => {
     (async () => {
-      const newItems = await fetchItems('/items', { parentId: null })
-      console.log('newItems', newItems)
+      const newItems = await fetchItems({ parentId: null })
       setItems(newItems)
     })()
   }, [])
 
 
   const handleChangeItem = async (event: ChangeEvent<HTMLSelectElement>) => {
-    const newSubItem = await fetchItems('/items', { parentId: parseInt(event.target.value) })
+    const newSubItem = await fetchItems({ parentId: parseInt(event.target.value) })
     setSubItems(newSubItem)
     setSubSubItems([])
   }
 
   const handleChangeSubItem = async (event: ChangeEvent<HTMLSelectElement>) => {
-    const newSubSubItem = await fetchItems('/items', { parentId: parseInt(event.target.value) })
+    const newSubSubItem = await fetchItems({ parentId: parseInt(event.target.value) })
     setSubSubItems(newSubSubItem)
   }
 
@@ -140,8 +58,8 @@ export default function ParentChildSelect() {
     <main>
       <Box mt={2} ml={2}>
         <form onSubmit={onSubmit}>
-          <button type="submit">test</button>
-          <Box>
+          <Button type="submit" variant="contained">submit</Button>
+          <Box mt={2}>
             <Box>
               大項目
             </Box>
@@ -194,7 +112,7 @@ export default function ParentChildSelect() {
           <Box>大項目の value</Box>
           <Box>
             {
-              items.map(item => (
+              parent-child-select.map(item => (
                   <Box key={item.id} className={item.id === parseInt(selectedItemId) ? 'font-bold' : ''}>{item.value}</Box>
                 ))
             }
