@@ -68,7 +68,7 @@ export default function ParentChildSelect() {
                 <option value=""></option>
                 {
                   items.map(item => (
-                    <option key={item.id} value={item.id}>{item.value}</option>
+                    <option key={item.id} value={item.value}>{item.value}</option>
                   ))
                 }
               </select>
@@ -83,7 +83,7 @@ export default function ParentChildSelect() {
                 <option value=""></option>
                 {
                   subItems.map(subItem => (
-                      <option key={subItem.id} value={subItem.id}>{subItem.value}</option>
+                      <option key={subItem.id} value={subItem.value}>{subItem.value}</option>
                     ))
                 }
               </select>
@@ -98,7 +98,7 @@ export default function ParentChildSelect() {
                 <option value=""></option>
                 {
                   subSubItems.map(subSubItem => (
-                      <option key={subSubItem.id} value={subSubItem.id}>{subSubItem.value}</option>
+                      <option key={subSubItem.id} value={subSubItem.value}>{subSubItem.value}</option>
                     ))
                 }
               </select>
