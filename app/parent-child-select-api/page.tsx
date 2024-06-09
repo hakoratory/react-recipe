@@ -46,9 +46,9 @@ export default function ParentChildSelect() {
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const item = form.get("item") || "";
-    const subItem = form.get("subItem") || "";
-    const subSubItem = form.get("subSubItem") || "";
+    const item = form.get("item") ? items.find(item => item.id === parseInt(form.get("item") as string))?.value : "";
+    const subItem = form.get("subItem") ? subItems.find(subItem => subItem.id === parseInt(form.get("subItem") as string))?.value : "";
+    const subSubItem = form.get("subSubItem") ? subSubItems.find(subSubItem => subSubItem.id === parseInt(form.get("subSubItem") as string))?.value : "";
     alert(
       `item: ${item}\nsubItem: ${subItem}\nsubSubItem: ${subSubItem}`
     );
@@ -68,7 +68,7 @@ export default function ParentChildSelect() {
                 <option value=""></option>
                 {
                   items.map(item => (
-                    <option key={item.id} value={item.value}>{item.value}</option>
+                    <option key={item.id} value={item.id}>{item.value}</option>
                   ))
                 }
               </select>
@@ -83,7 +83,7 @@ export default function ParentChildSelect() {
                 <option value=""></option>
                 {
                   subItems.map(subItem => (
-                      <option key={subItem.id} value={subItem.value}>{subItem.value}</option>
+                      <option key={subItem.id} value={subItem.id}>{subItem.value}</option>
                     ))
                 }
               </select>
@@ -98,7 +98,7 @@ export default function ParentChildSelect() {
                 <option value=""></option>
                 {
                   subSubItems.map(subSubItem => (
-                      <option key={subSubItem.id} value={subSubItem.value}>{subSubItem.value}</option>
+                      <option key={subSubItem.id} value={subSubItem.id}>{subSubItem.value}</option>
                     ))
                 }
               </select>
