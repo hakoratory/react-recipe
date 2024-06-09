@@ -60,9 +60,9 @@ export default function ParentChildSelectApiForm() {
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const item = items.find(item => item.id === formData.itemId)?.value
-    const subItem = subItems.find(subItem => subItem.id === formData.subItemId)?.value
-    const subSubItem = subSubItems.find(subSubItem => subSubItem.id === formData.subSubItemId)?.value
+    const item = formData.itemId ? items.find(item => item.id === formData.itemId)?.value : ''
+    const subItem = formData.subItemId ? subItems.find(subItem => subItem.id === formData.subItemId)?.value : ''
+    const subSubItem = formData.subSubItemId ? subSubItems.find(subSubItem => subSubItem.id === formData.subSubItemId)?.value : ''
     alert(
         `item: ${item}\nsubItem: ${subItem}\nsubSubItem: ${subSubItem}`
     );
