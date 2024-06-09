@@ -7,3 +7,9 @@ export type ParentChildSelectItem = {
     parentId: number | null,
     value: string
 }
+
+export type ParentChildSelectItemForm = {
+    itemId: number | null,
+    subItemId: number | null,
+    subSubItemId: number | null,
+}
