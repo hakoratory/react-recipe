@@ -1,9 +1,12 @@
+'use client'
 import {Box, Typography} from "@mui/material";
 import LocalConvenienceStoreIcon from '@mui/icons-material/LocalConvenienceStore';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PeopleIcon from '@mui/icons-material/People';
 import BuildIcon from '@mui/icons-material/Build';
+//import {usePathname} from "next/navigation";
+import {useState} from "react";
 
 const Logo = () => (
     <Box
@@ -35,6 +38,24 @@ const Logo = () => (
 )
 
 export default function SideMenu() {
+    //const pathname = usePathname()
+    const [pathname, setPathname] = useState<string>('/');
+
+    function getPageName() {
+        switch (pathname) {
+            case '/product':
+                return 'Product'
+            case '/work-schedule':
+                return 'Work Schedule'
+            case '/staff':
+                return 'Staff'
+            case '/system-setting':
+                return 'System Setting'
+            default:
+                return ''
+        }
+    }
+
     return (
         <Box display="flex">
             <Box
@@ -49,12 +70,26 @@ export default function SideMenu() {
             >
                 <Logo />
                 <ul>
-                    <Box component="li" display="flex" alignItems="center" ml={3} my={3}>
+                    <Box
+                        component="li"
+                        pl={5}
+                        py={2}
+                        sx={{
+                            borderBottom: '1px solid white',
+                            '&:hover': {
+                                opacity: 0.7
+                            },
+                            backgroundColor: pathname === '/product' ? '#afaffa' : 'transparent'
+                        }}
+                        onClick={() => setPathname('/product')}
+                    >
                         <HomeRepairServiceIcon
                             fontSize="large"
                             sx={{
                                 color: "white",
-                                marginRight: "0.5rem"
+                                marginRight: "0.5rem",
+                                position: 'relative',
+                                top: -3
                             }}
                         />
                         <Typography
@@ -67,12 +102,26 @@ export default function SideMenu() {
                             Product
                         </Typography>
                     </Box>
-                    <Box component="li" display="flex" alignItems="center" ml={3} my={3}>
+                    <Box
+                        component="li"
+                        pl={5}
+                        py={2}
+                        sx={{
+                            borderBottom: '1px solid white',
+                            '&:hover': {
+                                opacity: 0.7
+                            },
+                            backgroundColor: pathname === '/work-schedule' ? '#afaffa' : 'transparent'
+                        }}
+                        onClick={() => setPathname('/work-schedule')}
+                    >
                         <CalendarMonthIcon
                             fontSize="large"
                             sx={{
                                 color: "white",
-                                marginRight: "0.5rem"
+                                marginRight: "0.5rem",
+                                position: 'relative',
+                                top: -3
                             }}
                         />
                         <Typography
@@ -85,12 +134,26 @@ export default function SideMenu() {
                             Work Schedule
                         </Typography>
                     </Box>
-                    <Box component="li" display="flex" alignItems="center" ml={3} my={3}>
+                    <Box
+                        component="li"
+                        pl={5}
+                        py={2}
+                        sx={{
+                            borderBottom: '1px solid white',
+                            '&:hover': {
+                                opacity: 0.7
+                            },
+                            backgroundColor: pathname === '/staff' ? '#afaffa' : 'transparent'
+                        }}
+                        onClick={() => setPathname('/staff')}
+                    >
                         <PeopleIcon
                             fontSize="large"
                             sx={{
                                 color: "white",
-                                marginRight: "0.5rem"
+                                marginRight: "0.5rem",
+                                position: 'relative',
+                                top: -3
                             }}
                         />
                         <Typography
@@ -103,12 +166,26 @@ export default function SideMenu() {
                             Staff
                         </Typography>
                     </Box>
-                    <Box component="li" display="flex" alignItems="center" ml={3} my={3}>
+                    <Box
+                        component="li"
+                        pl={5}
+                        py={2}
+                        sx={{
+                            borderBottom: '1px solid white',
+                            '&:hover': {
+                                opacity: 0.7
+                            },
+                            backgroundColor: pathname === '/system-setting' ? '#afaffa' : 'transparent'
+                        }}
+                        onClick={() => setPathname('/system-setting')}
+                    >
                         <BuildIcon
                             fontSize="large"
                             sx={{
                                 color: "white",
-                                marginRight: "0.5rem"
+                                marginRight: "0.5rem",
+                                position: 'relative',
+                                top: -3
                             }}
                         />
                         <Typography
@@ -131,7 +208,11 @@ export default function SideMenu() {
                 width="100%"
                 m={2}
             >
-                <Typography variant="h3" sx={{ color: "#6573c3"}}>Product</Typography>
+                <Typography variant="h3" sx={{ color: "#6573c3"}}>
+                    {
+                        getPageName()
+                    }
+                </Typography>
             </Box>
         </Box>
 
