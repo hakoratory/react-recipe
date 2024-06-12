@@ -60,8 +60,6 @@ export default function SideMenu() {
         <Box display="flex">
             <Box
                 component="nav"
-                display="flex"
-                flexDirection="column"
                 height="100vh"
                 bgcolor="primary"
                 style={{
