@@ -14,28 +14,27 @@ export default function ValidateScratch() {
         const form = new FormData(event.currentTarget);
 
         const errors = validateForm(form)
+        setErrors(errors)
         if (errors.length) {
-            setErrors(errors)
             return
         }
 
-        setErrors([])
         alert('No validate errors!')
     }
 
     const handleBlur = (event: ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
 
-        let newErrors = errors.filter(error => error.key !== event.target.name)
-        newErrors = newErrors.concat(validate(event.target.name, event.target.value))
+        const errorsWithoutTarget = errors.filter(error => error.key !== event.target.name)
+        const newErrors = errorsWithoutTarget.concat(validate(event.target.name, event.target.value))
         setErrors(newErrors)
     }
 
     const validateForm = (form: FormData): ValidateError[] => {
-        let errors: ValidateError[] = [];
-        errors = errors.concat(validate('fullName', form.get("fullName") as string ?? ''))
-        errors = errors.concat(validate('fullNameKana', form.get("fullNameKana") as string ?? ''))
-        return errors
+        return [
+            ...validate('fullName', form.get("fullName") as string ?? ''),
+            ...validate('fullNameKana', form.get("fullNameKana") as string ?? '')
+        ]
     }
 
     const validate = (propertyName: string, value: string): ValidateError[] => {
