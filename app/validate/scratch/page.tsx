@@ -42,7 +42,7 @@ export default function ValidateScratch() {
         if (value === '') {
             errors.push({
                 key: propertyName,
-                message: '名前を入力してください'
+                message: '入力してください'
             })
         }
         if ((value as string).length > 30) {
