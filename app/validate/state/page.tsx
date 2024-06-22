@@ -1,6 +1,6 @@
 'use client'
 
-import {Box, Button} from "@mui/material";
+import {Box, Button, Typography} from "@mui/material";
 import {ChangeEvent, FormEvent, useState} from "react";
 import './style.css'
 import {ValidateError} from "@/types/validate-scratch";
@@ -111,6 +111,18 @@ export default function ValidateState() {
                         <Button type="submit" variant="contained" disabled={errors.length > 0}>SUBMIT</Button>
                     </Box>
                 </form>
+            </Box>
+            <Box mt={2} ml={2}>
+                <Box>
+                    <Typography variant="body2">
+                        {fullNameKana !== '' && `${fullNameKana}さん、こんにちは。` }
+                    </Typography>
+                </Box>
+                <Box>
+                    <Typography variant="h4">
+                        {fullName !== '' && `${fullName}さん、こんにちは。` }
+                    </Typography>
+                </Box>
             </Box>
         </main>
 )
