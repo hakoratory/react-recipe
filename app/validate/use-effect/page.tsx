@@ -1,20 +1,47 @@
 'use client'
 
 import {Box, Button, Typography} from "@mui/material";
-import {ChangeEvent, FormEvent, useState} from "react";
+import {ChangeEvent, FormEvent, useEffect, useState} from "react";
 import './style.css'
 import {ValidateError} from "@/types/validate-scratch";
+import {ValidateUseEffectForm} from "@/types/validate-use-effect";
 
 
-export default function ValidateState() {
-    const [fullName, setFullName] = useState<string>('')
-    const [fullNameKana, setFullNameKana] = useState<string>('')
+export default function ValidateUseEffect() {
+    const [formData, setFormData] = useState<ValidateUseEffectForm>({
+        fullName: '',
+        fullNameKana: '',
+    })
     const [errors, setErrors] = useState<ValidateError[]>([])
+
+    useEffect(() => {
+        const validate = (propertyName: string, value: string): ValidateError[] => {
+            const errors: ValidateError[] = [];
+            if (value === '') {
+                errors.push({
+                    key: propertyName,
+                    message: '入力してください'
+                })
+            }
+            if ((value as string).length > 30) {
+                errors.push({
+                    key: propertyName,
+                    message: '30字以下で入力してください'
+                })
+            }
+            return errors
+        }
+
+        setErrors([
+            ...validate('fullName', formData.fullName),
+            ...validate('fullNameKana', formData.fullNameKana)
+        ])
+
+    }, [formData]);
 
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
-        const errors = validateForm()
         setErrors(errors)
         if (errors.length) {
             return
@@ -26,43 +53,15 @@ export default function ValidateState() {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             case 'fullName': {
-                setFullName(event.target.value)
+                setFormData({...formData, fullName: event.target.value})
                 break
             }
             case 'fullNameKana': {
-                setFullNameKana(event.target.value)
+                setFormData({...formData, fullNameKana: event.target.value})
                 break
             }
             default:
         }
-
-        const errorsWithoutTarget = errors.filter(error => error.key !== event.target.name)
-        const newErrors = errorsWithoutTarget.concat(validate(event.target.name, event.target.value))
-        setErrors(newErrors)
-    }
-
-    const validateForm = (): ValidateError[] => {
-        return [
-            ...validate('fullName', fullName),
-            ...validate('fullNameKana', fullNameKana)
-        ]
-    }
-
-    const validate = (propertyName: string, value: string): ValidateError[] => {
-        const errors: ValidateError[] = [];
-        if (value === '') {
-            errors.push({
-                key: propertyName,
-                message: '入力してください'
-            })
-        }
-        if ((value as string).length > 30) {
-            errors.push({
-                key: propertyName,
-                message: '30字以下で入力してください'
-            })
-        }
-        return errors
     }
 
     const getErrorByPropertyName = (propertyName: string) => {
@@ -115,12 +114,12 @@ export default function ValidateState() {
             <Box mt={2} ml={2}>
                 <Box>
                     <Typography variant="body2">
-                        {fullNameKana !== '' && `${fullNameKana}さん、こんにちは。` }
+                        {formData.fullNameKana !== '' && `${formData.fullNameKana}さん、こんにちは。` }
                     </Typography>
                 </Box>
                 <Box>
                     <Typography variant="h4">
-                        {fullName !== '' && `${fullName}さん、こんにちは。` }
+                        {formData.fullName !== '' && `${formData.fullName}さん、こんにちは。` }
                     </Typography>
                 </Box>
             </Box>
