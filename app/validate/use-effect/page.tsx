@@ -124,5 +124,5 @@ export default function ValidateUseEffect() {
                 </Box>
             </Box>
         </main>
-)
+    )
 }
