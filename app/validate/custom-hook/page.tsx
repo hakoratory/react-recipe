@@ -130,7 +130,7 @@ export default function ValidateCustomHook() {
                         </Box>
                     </Box>
                     <Box>
-                        <Button type="submit" variant="contained" disabled={fullName.errors.length > 0 || fullNameKana.errors.length > 0}>SUBMIT</Button>
+                        <Button type="submit" variant="contained" disabled={fullName.errors.length > 0 || fullNameKana.errors.length > 0 || fullNameEnglish.errors.length > 0}>SUBMIT</Button>
                     </Box>
                 </form>
             </Box>
