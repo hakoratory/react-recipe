@@ -42,7 +42,6 @@ const useValidate = (value: string, type: InputType, rule: ValidateRule) => {
 
 const useTextInput = (rule: ValidateRule = defaultRule): [{ value: string, errors: string[]}, Dispatch<SetStateAction<string>>] => {
     const [value, setValue] = useState<string>('')
-    console.log(rule)
     const errors = useValidate(value, 'text', rule)
 
     return [{ value, errors }, setValue]
