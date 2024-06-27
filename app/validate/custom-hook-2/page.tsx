@@ -3,60 +3,62 @@
 import {Box, Button, Typography} from "@mui/material";
 import {ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
 import './style.css'
+import {ValidateRule, InputType} from "@/types/validate-custom-hook";
 
-const useTextInput = (): [{ value: string, errors: string[]}, Dispatch<SetStateAction<string>>] => {
-    const [value, setValue] = useState<string>('')
-    const [errors, setErrors] = useState<string[]>([])
-
-    useEffect(() => {
-        const validate = (): string[] => {
-            const errors: string[] = [];
-            if (value === '') {
-                errors.push('入力してください')
-            }
-            if (value.length > 30) {
-                errors.push('30字以下で入力してください')
-            }
-            return errors
-        }
-
-        setErrors(validate())
-
-    }, [value]);
-
-    return [{ value, errors }, setValue]
+const defaultRule: ValidateRule = {
+    required: true,
+    maxLength: 30,
 }
 
-const useAlphaInput = (): [{ value: string, errors: string[]}, Dispatch<SetStateAction<string>>] => {
-    const [value, setValue] = useState<string>('')
+const kanaRule: ValidateRule = {
+    required: false,
+    maxLength: 50,
+}
+
+const useValidate = (value: string, type: InputType, rule: ValidateRule) => {
     const [errors, setErrors] = useState<string[]>([])
 
     useEffect(() => {
         const validate = (): string[] => {
             const errors: string[] = [];
-            if (value === '') {
+            if (rule.required && value === '') {
                 errors.push('入力してください')
             }
-            if (value.length > 30) {
-                errors.push('30字以下で入力してください')
+            if (value.length > rule.maxLength) {
+                errors.push(`${rule.maxLength}字以下で入力してください`)
             }
-            if (!value.match(/^[a-zA-Z ]*$/)) {
+            if (type === 'alpha' && !value.match(/^[a-zA-Z ]*$/)) {
                 errors.push('半角英字で入力してください')
             }
             return errors
         }
-
         setErrors(validate())
-
+        // rule を依存関係に含めていないため警告が出るが、含めたくないので抑止する。
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
+
+    return errors
+}
+
+const useTextInput = (rule: ValidateRule = defaultRule): [{ value: string, errors: string[]}, Dispatch<SetStateAction<string>>] => {
+    const [value, setValue] = useState<string>('')
+    console.log(rule)
+    const errors = useValidate(value, 'text', rule)
 
     return [{ value, errors }, setValue]
 }
 
-export default function ValidateCustomHook() {
+const useAlphaInput = (rule: ValidateRule = defaultRule): [{ value: string, errors: string[]}, Dispatch<SetStateAction<string>>] => {
+    const [value, setValue] = useState<string>('')
+    const errors = useValidate(value, 'alpha', rule)
+
+    return [{ value, errors }, setValue]
+}
+
+export default function ValidateCustomHook2() {
     const [fullName, setFullName] = useTextInput()
-    const [fullNameKana, setFullNameKana] = useTextInput()
-    const [fullNameEnglish, setFullNameEnglish] = useAlphaInput()
+    const [fullNameKana, setFullNameKana] = useTextInput(kanaRule)
+    const [fullNameEnglish, setFullNameEnglish] = useAlphaInput({ required: true, maxLength: 40 })
 
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -130,7 +132,7 @@ export default function ValidateCustomHook() {
                         </Box>
                     </Box>
                     <Box>
-                        <Button type="submit" variant="contained" disabled={fullName.errors.length > 0 || fullNameKana.errors.length > 0}>SUBMIT</Button>
+                        <Button type="submit" variant="contained" disabled={fullName.errors.length > 0 || fullNameKana.errors.length > 0 || fullNameEnglish.errors.length > 0}>SUBMIT</Button>
                     </Box>
                 </form>
             </Box>
