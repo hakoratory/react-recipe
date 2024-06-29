@@ -1,7 +1,7 @@
 'use client'
 
 import {Box, Button, Typography} from "@mui/material";
-import {ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
+import {ChangeEventHandler, Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
 import './style.css'
 import {ValidateRule, InputType} from "@/types/validate-custom-hook";
 
@@ -54,7 +54,31 @@ const useAlphaInput = (rule: ValidateRule = defaultRule): [{ value: string, erro
     return [{ value, errors }, setValue]
 }
 
-export default function ValidateCustomHook2() {
+type InputProps = {
+    label: string,
+    onChange: ChangeEventHandler<HTMLInputElement>,
+    errors: string[]
+}
+
+const Input = ({label, errors, onChange}: InputProps) => {
+    return (
+        <Box mb={2}>
+            <Box mb={1}>
+                <span>{label}</span>
+            </Box>
+            <Box>
+                <input type="text" className={errors.length ? 'error' : ''} onChange={onChange} />
+            </Box>
+            <Box height="1rem" sx={{color: 'red'}}>
+                {
+                    errors.map((error, index) => <span key={index}>{error}</span>)
+                }
+            </Box>
+        </Box>
+    )
+}
+
+export default function ValidateComponent() {
     const [fullName, setFullName] = useTextInput()
     const [fullNameKana, setFullNameKana] = useTextInput(kanaRule)
     const [fullNameEnglish, setFullNameEnglish] = useAlphaInput({ required: true, maxLength: 40 })
@@ -69,67 +93,13 @@ export default function ValidateCustomHook2() {
         alert('No validate errors!')
     }
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        switch (event.target.name) {
-            case 'fullName': {
-                setFullName(event.target.value)
-                break
-            }
-            case 'fullNameKana': {
-                setFullNameKana(event.target.value)
-                break
-            }
-            case 'fullNameEnglish': {
-                setFullNameEnglish(event.target.value)
-                break
-            }
-            default:
-        }
-    }
-
     return (
         <main>
             <Box mt={2} ml={2}>
                 <form onSubmit={onSubmit}>
-                    <Box mb={2}>
-                        <Box mb={1}>
-                            <span>名前</span>
-                        </Box>
-                        <Box>
-                            <input type="text" name="fullName" className={fullName.errors.length ? 'error' : ''} onChange={handleChange} />
-                        </Box>
-                        <Box height="1rem" sx={{color: 'red'}}>
-                            {
-                                fullName.errors.map((error, index) => <span key={`${index}-fullName`}>{error}</span>)
-                            }
-                        </Box>
-                    </Box>
-                    <Box mb={2}>
-                        <Box mb={1}>
-                            <span>かな</span>
-                        </Box>
-                        <Box>
-                            <input type="text" name="fullNameKana" className={fullNameKana.errors.length ? 'error' : ''} onChange={handleChange} />
-                        </Box>
-                        <Box height="1rem" sx={{color: 'red'}}>
-                            {
-                                fullNameKana.errors.map((error, index) => <span key={`${index}-fullNameKana`}>{error}</span>)
-                            }
-                        </Box>
-                    </Box>
-                    <Box mb={2}>
-                        <Box mb={1}>
-                            <span>Full Name</span>
-                        </Box>
-                        <Box>
-                            <input type="text" name="fullNameEnglish" className={fullNameEnglish.errors.length ? 'error' : ''} onChange={handleChange} />
-                        </Box>
-                        <Box height="1rem" sx={{color: 'red'}}>
-                            {
-                                fullNameEnglish.errors.map((error, index) => <span key={`${index}-fullNameEnglish`}>{error}</span>)
-                            }
-                        </Box>
-                    </Box>
+                    <Input label="名前" onChange={(e) => setFullName(e.target.value)} errors={fullName.errors}/>
+                    <Input label="かな" onChange={(e) => setFullNameKana(e.target.value)} errors={fullNameKana.errors}/>
+                    <Input label="Full Name" onChange={(e) => setFullNameEnglish(e.target.value)} errors={fullNameEnglish.errors}/>
                     <Box>
                         <Button type="submit" variant="contained" disabled={fullName.errors.length > 0 || fullNameKana.errors.length > 0 || fullNameEnglish.errors.length > 0}>SUBMIT</Button>
                     </Box>
@@ -144,6 +114,11 @@ export default function ValidateCustomHook2() {
                 <Box>
                     <Typography variant="h4">
                         {fullName.value !== '' && `${fullName.value}さん、こんにちは。` }
+                    </Typography>
+                </Box>
+                <Box>
+                    <Typography variant="body1">
+                        {fullNameEnglish.value !== '' && `Hello ${fullNameEnglish.value}.` }
                     </Typography>
                 </Box>
             </Box>
