@@ -1,7 +1,7 @@
 'use client'
 
 import '../style.css'
-import {Box} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import {Input} from "@/components/input";
 import {useTextInput} from "@/hooks/use-text-input";
 import {tableUsers} from "@/data/data";
@@ -34,12 +34,29 @@ export default function TableScratch() {
         })()
     }, [])
 
+    const handleClick = async () => {
+        const newUsers = await fetchUsers({ name: searchWord.value })
+        setTableUserData(newUsers)
+    }
+
     return (
         <main>
             <Box m={2}>
-                <form>
-                    <Input label="名前" errors={searchWord.errors} onChange={(e) => setSearchWord(e.target.value)} />
-                </form>
+                <Box display="flex">
+                    <Box>
+                        <Input label="名前" errors={searchWord.errors} onChange={(e) => setSearchWord(e.target.value)} />
+                    </Box>
+                    <Box ml={3} pt={3}>
+                        <Button
+                            type="button"
+                            variant="contained"
+                            disabled={searchWord.errors.length > 0}
+                            onClick={handleClick}
+                        >
+                            検索
+                        </Button>
+                    </Box>
+                </Box>
             </Box>
             <Box m={2}>
                 <table>

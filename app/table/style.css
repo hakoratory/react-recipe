@@ -6,3 +6,27 @@ input {
 input.error {
     border: 1px solid red;
 }
+
+table {
+    width: 100%;
+    text-align: left;
+}
+
+table td {
+    background: #eee;
+}
+
+table tr:nth-child(odd) td {
+    background: #fff;
+}
+
+th {
+    border: 1px solid #000000;
+    padding: 0.5rem 1rem;
+    background-color: #baddff;
+}
+
+td {
+    border: 1px solid #000000;
+    padding: 0.5rem 1rem;
+}
