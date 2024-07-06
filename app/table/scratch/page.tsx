@@ -10,10 +10,8 @@ import {useEffect, useState} from "react";
 
 const fetchUsers = async (param: FetchTableUsersRequestType): Promise<Array<TableUser>> => {
     if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-        console.log('true')
         return tableUsers.filter(user => user.name.indexOf(param.name ?? '') > -1)
     } else {
-        console.log('false')
         const response = await fetch('/api/table/users', {
             method: 'POST',
             body: JSON.stringify(param)
