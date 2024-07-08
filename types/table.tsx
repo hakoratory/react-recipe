@@ -16,3 +16,9 @@ export type TableUser = {
 export type FetchTableUsersRequestType = {
     name: string | null
 }
+
+export type FetchTableUsersWithPageRequestType = {
+    name: string | null,
+    page: number,
+    pageSize: number
+}
