@@ -22,3 +22,8 @@ export type FetchTableUsersWithPageRequestType = {
     page: number,
     pageSize: number
 }
+
+export type FetchTableUsersWithPageResponseType = {
+    users: TableUser[],
+    totalCount: number
+}
