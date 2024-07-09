@@ -5,14 +5,14 @@ import {Box, Button} from "@mui/material";
 import {Input} from "@/components/input";
 import {useTextInput} from "@/hooks/use-text-input";
 import {tableUsers} from "@/data/data";
-import {FetchTableUsersWithPageRequestType, TableUser} from "@/types/table";
+import {FetchTableUsersRequestType, TableUser} from "@/types/table";
 import {useEffect, useState} from "react";
 
-const fetchUsers = async (param: FetchTableUsersWithPageRequestType): Promise<Array<TableUser>> => {
+const fetchUsers = async (param: FetchTableUsersRequestType): Promise<Array<TableUser>> => {
     if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
         return tableUsers.filter(user => user.name.indexOf(param.name ?? '') > -1)
     } else {
-        const response = await fetch('/api/table/users-with-page', {
+        const response = await fetch('/api/table/users', {
             method: 'POST',
             body: JSON.stringify(param)
         })
@@ -27,13 +27,13 @@ export default function TableScratch() {
 
     useEffect(() => {
         (async () => {
-            const newUsers = await fetchUsers({ name: null, page: 1, pageSize: 2 })
+            const newUsers = await fetchUsers({ name: null })
             setTableUserData(newUsers)
         })()
     }, [])
 
     const handleClick = async () => {
-        const newUsers = await fetchUsers({ name: searchWord.value, page: 1, pageSize: 2 })
+        const newUsers = await fetchUsers({ name: searchWord.value })
         setTableUserData(newUsers)
     }
 
@@ -77,12 +77,6 @@ export default function TableScratch() {
                     }
                     </tbody>
                 </table>
-                <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '1rem'}}>
-                    <div style={{border: '1px solid #000', width: '30px', textAlign: 'center'}}>{'<'}</div>
-                    <div style={{border: '1px solid #000', width: '30px', textAlign: 'center', marginLeft: '8px'}}>1</div>
-                    <div style={{border: '1px solid #000', width: '30px', textAlign: 'center', marginLeft: '8px'}}>2</div>
-                    <div style={{border: '1px solid #000', width: '30px', textAlign: 'center', marginLeft: '8px'}}>{'>'}</div>
-                </div>
             </Box>
         </main>
     )
