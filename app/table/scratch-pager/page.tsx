@@ -5,13 +5,21 @@ import {Box, Button} from "@mui/material";
 import {Input} from "@/components/input";
 import {useTextInput} from "@/hooks/use-text-input";
 import {tableUsers} from "@/data/data";
-import {FetchTableUsersWithPageRequestType, FetchTableUsersWithPageResponseType, TableUser} from "@/types/table";
-import {useEffect, useState} from "react";
+import {
+  FetchTableUsersWithPageRequestType,
+  FetchTableUsersWithPageResponseType,
+  PagerProps,
+  TableUser
+} from "@/types/table";
+import {CSSProperties, useEffect, useState} from "react";
 
 const fetchUsers = async (param: FetchTableUsersWithPageRequestType): Promise<FetchTableUsersWithPageResponseType> => {
   if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    const filteredUsers = tableUsers.filter(user => user.name.indexOf(param.name ?? '') > -1)
+    const from = (param.page - 1) * param.pageSize
+    const to = param.page * param.pageSize
     return {
-      users: tableUsers.filter(user => user.name.indexOf(param.name ?? '') > -1),
+      users: filteredUsers.slice(from, to),
       totalCount: tableUsers.length,
     }
   } else {
@@ -23,11 +31,73 @@ const fetchUsers = async (param: FetchTableUsersWithPageRequestType): Promise<Fe
   }
 }
 
+const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
+  const totalPageCount = Math.ceil(totalCount / pageSize)
+  const pageButtonStyle: CSSProperties = {
+    border: '1px solid #000',
+    width: '30px',
+    textAlign: 'center'
+  }
+  return (
+    <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '1rem'}}>
+      {
+        // ページ数が２ページ以上のとき、「<」ボタンを表示する
+        totalPageCount > 1 &&
+        <div
+          style={pageButtonStyle}
+          onClick={() => onPageChange(page - 1)}
+        >
+          {'<'}
+        </div>
+      }
+      {
+        [...Array(totalPageCount)].map((_, index) => (
+          index + 1 === page
+            ? (
+              <div key={index}
+                   style={{
+                     ...pageButtonStyle,
+                     marginLeft: '8px',
+                     backgroundColor: '#d3d8d9'
+                   }}
+              >
+                {index + 1}
+              </div>
+            )
+            : (
+              <div key={index}
+                   style={{
+                     ...pageButtonStyle,
+                     marginLeft: '8px'
+                   }}
+                   onClick={() => onPageChange(index + 1)}
+              >
+                {index + 1}
+              </div>
+            )
+        ))
+      }
+      {
+        // ページ数が２ページ以上のとき、「>」ボタンを表示する
+        totalPageCount > 1 &&
+        <div
+          style={{
+            ...pageButtonStyle,
+            marginLeft: '8px'
+          }}
+          onClick={() => onPageChange(page + 1)}
+        >
+          {'>'}
+        </div>
+      }
+    </div>
+  )
+}
+
 export default function TableScratchWithPager() {
   const [searchWord, setSearchWord] = useTextInput()
   const [tableUserData, setTableUserData] = useState<Array<TableUser>>([])
-  const [totalCount, setTotalCount] = useState<number>(tableUserData.length)
-  const [totalPageCount, setTotalPageCount] = useState<number>(1)
+  const [totalCount, setTotalCount] = useState<number>(0)
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   useEffect(() => {
@@ -35,28 +105,14 @@ export default function TableScratchWithPager() {
       const newUsers = await fetchUsers({name: null, page: 1, pageSize: 2})
       setTableUserData(newUsers.users)
       setTotalCount(newUsers.totalCount)
-      setTotalPageCount(Math.ceil(newUsers.totalCount / 2))
       setCurrentPage(1)
     })()
   }, [])
 
-  useEffect(() => {
-    console.log('totalPageCount', totalPageCount)
-  }, [totalPageCount]);
-
-  const handleClick = async () => {
-    const newUsers = await fetchUsers({name: searchWord.value, page: 1, pageSize: 2})
-    setTableUserData(newUsers.users)
-    setTotalCount(newUsers.totalCount)
-    setTotalPageCount(Math.ceil(newUsers.totalCount / 2))
-    setCurrentPage(1)
-  }
-
-  const handlePageChange = async (newPage: number) => {
+  const handleSearch = async (newPage: number) => {
     const newUsers = await fetchUsers({name: searchWord.value, page: newPage, pageSize: 2})
     setTableUserData(newUsers.users)
     setTotalCount(newUsers.totalCount)
-    setTotalPageCount(Math.ceil(newUsers.totalCount / 2))
     setCurrentPage(newPage)
   }
 
@@ -72,7 +128,7 @@ export default function TableScratchWithPager() {
               type="button"
               variant="contained"
               disabled={searchWord.errors.length > 0}
-              onClick={handleClick}
+              onClick={() => handleSearch(1)}
             >
               検索
             </Button>
@@ -100,58 +156,12 @@ export default function TableScratchWithPager() {
           }
           </tbody>
         </table>
-        <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '1rem'}}>
-          {
-            // ２ページ以上のとき、「<」ボタンを表示する
-            totalPageCount > 1 &&
-            <div style={{border: '1px solid #000', width: '30px', textAlign: 'center'}}>{'<'}</div>
-          }
-          {
-            [...Array(totalPageCount)].map((_, index) => (
-              index + 1 === currentPage
-                ? (
-                  <div key={index}
-                       style={{
-                         border: '1px solid #000',
-                         width: '30px',
-                         textAlign: 'center',
-                         marginLeft: '8px',
-                         backgroundColor: '#d3d8d9'
-                       }}
-                  >
-                    {index + 1}
-                  </div>
-                )
-                : (
-                  <div key={index}
-                       style={{
-                         border: '1px solid #000',
-                         width: '30px',
-                         textAlign: 'center',
-                         marginLeft: '8px'
-                       }}
-                       onClick={() => handlePageChange(index + 1)}
-                  >
-                    {index + 1}
-                  </div>
-                )
-            ))
-          }
-          {
-            // ２ページ以上のとき、「>」ボタンを表示する
-            totalPageCount > 1 &&
-            <div
-              style={{
-                border: '1px solid #000',
-                width: '30px',
-                textAlign: 'center',
-                marginLeft: '8px'
-              }}
-            >
-              {'>'}
-            </div>
-          }
-        </div>
+        <Pager
+          totalCount={totalCount}
+          page={currentPage}
+          pageSize={2}
+          onPageChange={handleSearch}
+        />
       </Box>
     </main>
   )
