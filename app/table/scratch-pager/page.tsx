@@ -44,8 +44,14 @@ const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
         // ページ数が２ページ以上のとき、「<」ボタンを表示する
         totalPageCount > 1 &&
         <div
-          style={pageButtonStyle}
-          onClick={() => onPageChange(page - 1)}
+          style={{
+            ...pageButtonStyle,
+            backgroundColor: page <= 1 ? '#dcdcdc' : 'transparent',
+          }}
+          onClick={() => {
+            if (page <= 1) return
+            onPageChange(page - 1)
+          }}
         >
           {'<'}
         </div>
@@ -58,7 +64,7 @@ const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
                    style={{
                      ...pageButtonStyle,
                      marginLeft: '8px',
-                     backgroundColor: '#d3d8d9'
+                     backgroundColor: '#f0f8ff'
                    }}
               >
                 {index + 1}
@@ -83,9 +89,13 @@ const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
         <div
           style={{
             ...pageButtonStyle,
-            marginLeft: '8px'
+            marginLeft: '8px',
+            backgroundColor: page >= totalPageCount ? '#dcdcdc' : 'transparent',
           }}
-          onClick={() => onPageChange(page + 1)}
+          onClick={() => {
+            if (page >= totalPageCount) return
+            onPageChange(page + 1)
+          }}
         >
           {'>'}
         </div>
