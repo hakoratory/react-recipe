@@ -33,13 +33,24 @@ const fetchUsers = async (param: FetchTableUsersWithPageRequestType): Promise<Fe
 
 const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
   const totalPageCount = Math.ceil(totalCount / pageSize)
+  // 表示中の件数表示 from - to
+  const from = (page - 1) * pageSize + 1
+  const to = page < totalPageCount ? page * pageSize : totalCount
+
   const pageButtonStyle: CSSProperties = {
     border: '1px solid #000',
     width: '30px',
     textAlign: 'center'
   }
+  
   return (
     <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '1rem'}}>
+      {
+        totalCount > 0 &&
+        <div style={{marginRight: '16px'}}>
+          {from} - {to} of {totalCount}
+        </div>
+      }
       {
         // ページ数が２ページ以上のとき、「<」ボタンを表示する
         totalPageCount > 1 &&
