@@ -8,7 +8,7 @@ import {tableUsers} from "@/data/data";
 import {
   FetchTableUsersWithPageRequestType,
   FetchTableUsersWithPageResponseType,
-  PagerProps,
+  RichPagerProps,
   TableUser
 } from "@/types/table";
 import {ChangeEvent, CSSProperties, useEffect, useState} from "react";
@@ -32,7 +32,7 @@ const fetchUsers = async (param: FetchTableUsersWithPageRequestType): Promise<Fe
   }
 }
 
-const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
+const Pager = ({totalCount, page, pageSize, onPageChange}: RichPagerProps) => {
   const totalPageCount = Math.ceil(totalCount / pageSize)
   // 表示中の件数表示 from - to
   const from = (page - 1) * pageSize + 1
