@@ -1,4 +1,4 @@
-import {ChangeEventHandler} from "react";
+import {ChangeEvent, ChangeEventHandler} from "react";
 
 export type InputProps = {
   label: string,
@@ -32,5 +32,5 @@ export type PagerProps = {
   totalCount: number,
   page: number,
   pageSize: number,
-  onPageChange: (page: number) => {},
+  onPageChange: (event: ChangeEvent<unknown>, page: number) => {},
 }

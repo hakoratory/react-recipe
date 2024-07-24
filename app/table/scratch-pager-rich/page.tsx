@@ -11,7 +11,8 @@ import {
   PagerProps,
   TableUser
 } from "@/types/table";
-import {CSSProperties, useEffect, useState} from "react";
+import {ChangeEvent, CSSProperties, useEffect, useState} from "react";
+import usePagination from "@mui/material/usePagination";
 
 const fetchUsers = async (param: FetchTableUsersWithPageRequestType): Promise<FetchTableUsersWithPageResponseType> => {
   if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
@@ -42,7 +43,18 @@ const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
     width: '30px',
     textAlign: 'center'
   }
-  
+
+  const {items} = usePagination({
+    count: totalPageCount,
+    page: page,
+    onChange: onPageChange
+  })
+
+  useEffect(() => {
+    console.log('Math.ceil(totalCount / pageSize)', Math.ceil(totalCount / pageSize))
+    console.log(items)
+  }, [items]);
+
   return (
     <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '1rem'}}>
       {
@@ -52,64 +64,57 @@ const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
         </div>
       }
       {
-        // ページ数が２ページ以上のとき、「<」ボタンを表示する
-        totalPageCount > 1 &&
-        <div
-          style={{
-            ...pageButtonStyle,
-            backgroundColor: page <= 1 ? '#dcdcdc' : 'transparent',
-          }}
-          onClick={() => {
-            if (page <= 1) return
-            onPageChange(page - 1)
-          }}
-        >
-          {'<'}
-        </div>
-      }
-      {
-        [...Array(totalPageCount)].map((_, index) => (
-          index + 1 === page
-            ? (
-              <div key={index}
-                   style={{
-                     ...pageButtonStyle,
-                     marginLeft: '8px',
-                     backgroundColor: '#f0f8ff'
-                   }}
-              >
-                {index + 1}
-              </div>
-            )
-            : (
-              <div key={index}
-                   style={{
-                     ...pageButtonStyle,
-                     marginLeft: '8px'
-                   }}
-                   onClick={() => onPageChange(index + 1)}
-              >
-                {index + 1}
-              </div>
-            )
-        ))
-      }
-      {
-        // ページ数が２ページ以上のとき、「>」ボタンを表示する
-        totalPageCount > 1 &&
-        <div
-          style={{
-            ...pageButtonStyle,
-            marginLeft: '8px',
-            backgroundColor: page >= totalPageCount ? '#dcdcdc' : 'transparent',
-          }}
-          onClick={() => {
-            if (page >= totalPageCount) return
-            onPageChange(page + 1)
-          }}
-        >
-          {'>'}
-        </div>
+        items.map((item, index) => {
+          switch (item.type) {
+            case 'first':
+              return (
+                <div key={index} style={{...pageButtonStyle, pointerEvents: item.disabled ? 'none' : 'initial'}}
+                     onClick={item.onClick}>
+                  {'<<'}
+                </div>
+              )
+            case 'previous':
+              return (
+                <div key={index}
+                     style={{...pageButtonStyle, marginLeft: '8px', pointerEvents: item.disabled ? 'none' : 'initial'}}
+                     onClick={item.onClick}>
+                  {'<'}
+                </div>
+              )
+            case 'start-ellipsis':
+            case 'end-ellipsis':
+              return (
+                <div key={index} style={{...pageButtonStyle, marginLeft: '8px',}} onClick={item.onClick}>
+                  {'...'}
+                </div>
+              )
+            case 'page':
+              return (
+                <div key={index}
+                     style={{
+                       ...pageButtonStyle,
+                       marginLeft: '8px',
+                       backgroundColor: item.selected ? '#f0f8ff' : 'transparent'
+                     }}
+                     onClick={item.onClick}
+                >
+                  {item.page}
+                </div>
+              )
+            case 'next':
+              return (
+                <div key={index} style={{...pageButtonStyle, marginLeft: '8px',}} onClick={item.onClick}>
+                  {'>'}
+                </div>
+              )
+            case 'last':
+              return (
+                <div key={index} style={{...pageButtonStyle, marginLeft: '8px',}} onClick={item.onClick}>
+                  {'>>'}
+                </div>
+              )
+          }
+        })
       }
     </div>
   )
@@ -130,7 +135,7 @@ export default function TableScratchWithPagerRich() {
     })()
   }, [])
 
-  const handleSearch = async (newPage: number) => {
+  const handleSearch = async (event: ChangeEvent<unknown>, newPage: number) => {
     const newUsers = await fetchUsers({name: searchWord.value, page: newPage, pageSize: 2})
     setTableUserData(newUsers.users)
     setTotalCount(newUsers.totalCount)
@@ -149,7 +154,7 @@ export default function TableScratchWithPagerRich() {
               type="button"
               variant="contained"
               disabled={searchWord.errors.length > 0}
-              onClick={() => handleSearch(1)}
+              onClick={(e) => handleSearch(e, 1)}
             >
               検索
             </Button>
