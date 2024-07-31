@@ -8,11 +8,12 @@ import {tableUsers} from "@/data/data";
 import {
   FetchTableUsersWithPageRequestType,
   FetchTableUsersWithPageResponseType,
+  PageButtonProps,
   PagerProps,
   TableUser
 } from "@/types/table";
 import {ChangeEvent, CSSProperties, useEffect, useState} from "react";
-import usePagination from "@mui/material/usePagination";
+import usePagination, {UsePaginationItem} from "@mui/material/usePagination";
 
 const fetchUsers = async (param: FetchTableUsersWithPageRequestType): Promise<FetchTableUsersWithPageResponseType> => {
   if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
@@ -32,17 +33,33 @@ const fetchUsers = async (param: FetchTableUsersWithPageRequestType): Promise<Fe
   }
 }
 
+const PageButton = ({children, onClick, disabled, selected}: PageButtonProps) => {
+  const pageButtonStyle: CSSProperties = {
+    border: '1px solid #000',
+    minWidth: '35px',
+    textAlign: 'center',
+    padding: "5px 0"
+  }
+
+  return (
+    <Button
+      style={{
+        ...pageButtonStyle,
+        backgroundColor: selected ? '#f0f8ff' : 'transparent'
+      }}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {children}
+    </Button>
+  )
+}
+
 const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
   const totalPageCount = Math.ceil(totalCount / pageSize)
   // 表示中の件数表示 from - to
   const from = (page - 1) * pageSize + 1
   const to = page < totalPageCount ? page * pageSize : totalCount
-
-  const pageButtonStyle: CSSProperties = {
-    border: '1px solid #000',
-    width: '30px',
-    textAlign: 'center'
-  }
 
   const {items} = usePagination({
     count: totalPageCount,
@@ -50,13 +67,31 @@ const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
     onChange: onPageChange
   })
 
+  const getButtonLabel = (item: UsePaginationItem) => {
+    switch (item.type) {
+      case 'first':
+        return '<<'
+      case 'previous':
+        return '<'
+      case 'start-ellipsis':
+      case 'end-ellipsis':
+        return '...'
+      case 'page':
+        return item.page
+      case 'next':
+        return '>'
+      case 'last':
+        return '>>'
+    }
+  }
+
   useEffect(() => {
     console.log('Math.ceil(totalCount / pageSize)', Math.ceil(totalCount / pageSize))
     console.log(items)
   }, [items]);
 
   return (
-    <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '1rem'}}>
+    <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '1rem'}} className="page-buttons">
       {
         totalCount > 0 &&
         <div style={{marginRight: '16px'}}>
@@ -64,57 +99,16 @@ const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
         </div>
       }
       {
-        items.map((item, index) => {
-          switch (item.type) {
-            case 'first':
-              return (
-                <div key={index} style={{...pageButtonStyle, pointerEvents: item.disabled ? 'none' : 'initial'}}
-                     onClick={item.onClick}>
-                  {'<<'}
-                </div>
-              )
-            case 'previous':
-              return (
-                <div key={index}
-                     style={{...pageButtonStyle, marginLeft: '8px', pointerEvents: item.disabled ? 'none' : 'initial'}}
-                     onClick={item.onClick}>
-                  {'<'}
-                </div>
-              )
-            case 'start-ellipsis':
-            case 'end-ellipsis':
-              return (
-                <div key={index} style={{...pageButtonStyle, marginLeft: '8px',}} onClick={item.onClick}>
-                  {'...'}
-                </div>
-              )
-            case 'page':
-              return (
-                <div key={index}
-                     style={{
-                       ...pageButtonStyle,
-                       marginLeft: '8px',
-                       backgroundColor: item.selected ? '#f0f8ff' : 'transparent'
-                     }}
-                     onClick={item.onClick}
-                >
-                  {item.page}
-                </div>
-              )
-            case 'next':
-              return (
-                <div key={index} style={{...pageButtonStyle, marginLeft: '8px',}} onClick={item.onClick}>
-                  {'>'}
-                </div>
-              )
-            case 'last':
-              return (
-                <div key={index} style={{...pageButtonStyle, marginLeft: '8px',}} onClick={item.onClick}>
-                  {'>>'}
-                </div>
-              )
-          }
-        })
+        items.map((item, index) => (
+          <PageButton
+            key={index}
+            onClick={item.onClick}
+            disabled={item.disabled}
+            selected={item.selected}
+          >
+            {getButtonLabel(item)}
+          </PageButton>
+        ))
       }
     </div>
   )

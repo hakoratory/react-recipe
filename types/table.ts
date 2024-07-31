@@ -1,4 +1,4 @@
-import {ChangeEvent, ChangeEventHandler} from "react";
+import React, {ChangeEvent, ChangeEventHandler, ReactNode} from "react";
 
 export type InputProps = {
   label: string,
@@ -33,4 +33,12 @@ export type PagerProps = {
   page: number,
   pageSize: number,
   onPageChange: (event: ChangeEvent<unknown>, page: number) => {},
+}
+
+export type PageButtonProps = {
+  children: ReactNode,
+  onClick: (event: React.MouseEvent<HTMLButtonElement>
+  ) => void,
+  disabled: boolean,
+  selected: boolean,
 }
