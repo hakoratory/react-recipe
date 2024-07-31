@@ -8,6 +8,7 @@ import {tableUsers} from "@/data/data";
 import {
   FetchTableUsersWithPageRequestType,
   FetchTableUsersWithPageResponseType,
+  RichPagerProps,
   PageButtonProps,
   PagerProps,
   TableUser
@@ -55,7 +56,7 @@ const PageButton = ({children, onClick, disabled, selected}: PageButtonProps) =>
   )
 }
 
-const Pager = ({totalCount, page, pageSize, onPageChange}: PagerProps) => {
+const Pager = ({totalCount, page, pageSize, onPageChange}: RichPagerProps) => {
   const totalPageCount = Math.ceil(totalCount / pageSize)
   // 表示中の件数表示 from - to
   const from = (page - 1) * pageSize + 1
