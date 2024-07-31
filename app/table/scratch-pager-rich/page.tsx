@@ -8,9 +8,8 @@ import {tableUsers} from "@/data/data";
 import {
   FetchTableUsersWithPageRequestType,
   FetchTableUsersWithPageResponseType,
-  RichPagerProps,
   PageButtonProps,
-  PagerProps,
+  RichPagerProps,
   TableUser
 } from "@/types/table";
 import {ChangeEvent, CSSProperties, useEffect, useState} from "react";
