@@ -38,7 +38,8 @@ const PageButton = ({children, onClick, disabled, selected}: PageButtonProps) =>
     border: '1px solid #000',
     minWidth: '35px',
     textAlign: 'center',
-    padding: "5px 0"
+    padding: "5px 0",
+    marginLeft: '8px',
   }
 
   return (
@@ -85,16 +86,11 @@ const Pager = ({totalCount, page, pageSize, onPageChange}: RichPagerProps) => {
     }
   }
 
-  useEffect(() => {
-    console.log('Math.ceil(totalCount / pageSize)', Math.ceil(totalCount / pageSize))
-    console.log(items)
-  }, [items]);
-
   return (
     <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '1rem'}} className="page-buttons">
       {
         totalCount > 0 &&
-        <div style={{marginRight: '16px'}}>
+        <div style={{marginRight: '16px', padding: '5px 0'}}>
           {from} - {to} of {totalCount}
         </div>
       }
@@ -119,10 +115,11 @@ export default function TableScratchWithPagerRich() {
   const [tableUserData, setTableUserData] = useState<Array<TableUser>>([])
   const [totalCount, setTotalCount] = useState<number>(0)
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const [pageSize, setPageSize] = useState<number>(5)
 
   useEffect(() => {
     (async () => {
-      const newUsers = await fetchUsers({name: null, page: 1, pageSize: 2})
+      const newUsers = await fetchUsers({name: null, page: 1, pageSize})
       setTableUserData(newUsers.users)
       setTotalCount(newUsers.totalCount)
       setCurrentPage(1)
@@ -130,7 +127,7 @@ export default function TableScratchWithPagerRich() {
   }, [])
 
   const handleSearch = async (event: ChangeEvent<unknown>, newPage: number) => {
-    const newUsers = await fetchUsers({name: searchWord.value, page: newPage, pageSize: 2})
+    const newUsers = await fetchUsers({name: searchWord.value, page: newPage, pageSize})
     setTableUserData(newUsers.users)
     setTotalCount(newUsers.totalCount)
     setCurrentPage(newPage)
@@ -156,7 +153,13 @@ export default function TableScratchWithPagerRich() {
         </Box>
       </Box>
       <Box m={2}>
-        <table>
+        <Pager
+          totalCount={totalCount}
+          page={currentPage}
+          pageSize={pageSize}
+          onPageChange={handleSearch}
+        />
+        <table style={{marginTop: '1rem'}}>
           <thead>
           <tr>
             <th>名前</th>
@@ -179,7 +182,7 @@ export default function TableScratchWithPagerRich() {
         <Pager
           totalCount={totalCount}
           page={currentPage}
-          pageSize={2}
+          pageSize={pageSize}
           onPageChange={handleSearch}
         />
       </Box>
