@@ -74,4 +74,9 @@ export const appPages = [
     title: 'Table Scratch Pager Rich',
     description: 'スクラッチで作った一覧画面のページャーをリッチにしました。',
   },
+  {
+    path: '/input-field/flat',
+    title: 'Input Field Flat',
+    description: '入力欄をコンポーネント化する前のフラットな状態です。',
+  },
 ]
