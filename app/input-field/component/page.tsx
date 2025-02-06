@@ -36,7 +36,7 @@ function LabeledTextInput({id, label, value, onChange, placeholder}: {
   const uniqueId = useId()
   return (
     <>
-      <Label htmlFor={id} text={label}/>
+      <Label htmlFor={id ?? uniqueId} text={label}/>
       <div>
         <TextInput
           id={id ?? uniqueId}
