@@ -79,4 +79,9 @@ export const appPages = [
     title: 'Input Field Flat',
     description: '入力欄をコンポーネント化する前のフラットな状態です。',
   },
+  {
+    path: '/input-field/component',
+    title: 'Input Field Component',
+    description: 'フラットな状態の入力欄をコンポーネント化しました。',
+  },
 ]
