@@ -84,4 +84,9 @@ export const appPages = [
     title: 'Input Field Component',
     description: 'フラットな状態の入力欄をコンポーネント化しました。',
   },
+  {
+    path: '/input-field/select-box-component',
+    title: 'Select Box Component',
+    description: 'Input Field Componentの作りと同様に、セレクトボックスのコンポーネントを作成しました。',
+  },
 ]
