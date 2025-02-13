@@ -4,7 +4,100 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import './style.css'
 import LabeledTextInputWithValidation from "@/app/input-field/select-box-component/components/LabeledTextInputWithValidation";
 import {prefectures} from "@/data/prefectures";
-import LabeledSelectBoxWithValidation from "@/app/input-field/select-box-component/components/LabeledSelectBoxWithValidation";
+import Label from "@/app/input-field/select-box-component/components/Label";
+import ErrorMessage from "@/app/input-field/select-box-component/components/ErrorMessage";
+
+type Option = {
+  id: string;
+  name: string;
+}
+
+type SelectBoxProps = {
+  id?: string;
+  value: string;
+  options: Option[];
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
+function SelectBox({ id, value, options, onChange }: SelectBoxProps) {
+  return (
+    <select id={id} value={value} onChange={onChange}>
+      <option value="">選択してください</option>
+      {options.map((option) => (
+        <option key={option.id} value={option.id}>{option.name}</option>
+      ))}
+    </select>
+  );
+}
+
+type LabeledSelectBoxProps = SelectBoxProps & {
+  label: string;
+};
+
+function LabeledSelectBox({ id, label, value, options, onChange }: LabeledSelectBoxProps) {
+  return (
+    <>
+      <Label htmlFor={id} text={label}/>
+      <div>
+        <SelectBox
+          id={id}
+          value={value}
+          options={options}
+          onChange={onChange}
+        />
+      </div>
+    </>
+  )
+}
+
+function LabeledSelectBoxWithValidation(
+  {
+    id,
+    label,
+    value,
+    options,
+    onChange,
+    required
+  }: {
+    id?: string;
+    label: string;
+    value: string;
+    options: Option[];
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+    required?: true;
+  }
+) {
+  const [error, setError] = useState<string>('');
+
+  const validate = (value: string): string => {
+    if (required && value.trim() === '') {
+      return `必須項目です。`;
+    }
+    return '';
+  };
+
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const newValue = event.target.value;
+    onChange(event);
+    const errorMessage = validate(newValue);
+    setError(errorMessage);
+  };
+
+  return (
+    <>
+      <LabeledSelectBox
+        id={id}
+        label={label}
+        value={value}
+        options={options}
+        onChange={handleChange}
+      />
+      <div style={{color: 'red', fontSize: '1rem', minHeight: '1.5rem', marginTop: '0.5rem'}}>
+        <ErrorMessage text={error}/>
+      </div>
+    </>
+  )
+}
 
 function SelectBoxComponent() {
   const [name, setName] = useState<string>('');
