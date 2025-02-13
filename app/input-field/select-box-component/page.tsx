@@ -64,7 +64,6 @@ function LabeledSelectBoxWithValidation(
     value: string;
     options: Option[];
     onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
-    placeholder?: string;
     required?: true;
   }
 ) {
