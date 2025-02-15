@@ -4,7 +4,7 @@ import React, {useState, ChangeEvent, FormEvent, createContext, ReactNode, useCo
 import './style.css'
 import LabeledTextInputWithValidation from "@/app/input-field/select-box-component/components/LabeledTextInputWithValidation";
 import {prefectures} from "@/data/prefectures";
-import LabeledSelectBoxWithValidation from "@/app/input-field/select-box-component/components/LabeledSelectBoxWithValidation";
+import LabeledSelectBoxWithValidation from "@/app/input-field/form-state/components/LabeledSelectBoxWithValidation";
 import {ValidationContextProvider} from "@/app/input-field/form-state/contexts/ValidationContext";
 
 function SelectBoxComponent() {

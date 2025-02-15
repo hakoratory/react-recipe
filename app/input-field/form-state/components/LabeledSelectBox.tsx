@@ -1,6 +1,6 @@
 import Label from "@/app/input-field/select-box-component/components/Label";
 import React from "react";
-import SelectBox, {SelectBoxProps} from "@/app/input-field/select-box-component/components/SelectBox";
+import SelectBox, {SelectBoxProps} from "@/app/input-field/form-state/components/SelectBox";
 
 type LabeledSelectBoxProps = SelectBoxProps & {
   label: string;
