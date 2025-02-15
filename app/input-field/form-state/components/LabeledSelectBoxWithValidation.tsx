@@ -1,7 +1,8 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent} from "react";
 import ErrorMessage from "@/app/input-field/form-state/components/ErrorMessage";
 import {Option} from "@/app/input-field/form-state/components/SelectBox";
 import LabeledSelectBox from "@/app/input-field/form-state/components/LabeledSelectBox";
+import {useValidationContext} from "@/app/input-field/form-state/contexts/ValidationContext";
 
 function LabeledSelectBoxWithValidation(
   {
@@ -20,7 +21,7 @@ function LabeledSelectBoxWithValidation(
     required?: true;
   }
 ) {
-  const [error, setError] = useState<string>('');
+  const { setError, clearError, getError } = useValidationContext();
 
   const validate = (value: string): string => {
     if (required && value.trim() === '') {
@@ -33,7 +34,11 @@ function LabeledSelectBoxWithValidation(
     const newValue = event.target.value;
     onChange(event);
     const errorMessage = validate(newValue);
-    setError(errorMessage);
+    if (errorMessage) {
+      setError(label, errorMessage);
+    } else {
+      clearError(label);
+    }
   };
 
   return (
@@ -46,7 +51,7 @@ function LabeledSelectBoxWithValidation(
         onChange={handleChange}
       />
       <div style={{color: 'red', fontSize: '1rem', minHeight: '1.5rem', marginTop: '0.5rem'}}>
-        <ErrorMessage text={error}/>
+        <ErrorMessage text={getError(label)?.message ?? ''} />
       </div>
     </>
   )

@@ -1,0 +1,19 @@
+.button {
+    background-color: #e6f2ff;  /* 薄い青色 */
+    color: #000000;  /* 黒字 */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover:not(:disabled) {
+    background-color: #cce6ff;  /* ホバー時は少し濃い青色 */
+}
+
+.button.disabled {
+    background-color: #f0f0f0;  /* 薄いグレー */
+    color: #000000;  /* 黒字 */
+    cursor: not-allowed;
+}

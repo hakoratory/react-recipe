@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../Button.module.css';
 
 export type ButtonProps = {
   text: string;
@@ -8,7 +9,16 @@ export type ButtonProps = {
 }
 
 function Button({ text, type, onClick, disabled = false }: ButtonProps) {
-  return <button type={type} onClick={onClick} disabled={disabled}>{text}</button>
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`${styles.button} ${disabled ? styles.disabled : ''}`}
+    >
+      {text}
+    </button>
+  )
 }
 
 export default Button;

@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect} from "react";
+import React, {ChangeEvent} from "react";
 import LabeledTextInput from "@/app/input-field/form-state/components/LabeledTextInput";
 import ErrorMessage from "@/app/input-field/form-state/components/ErrorMessage";
 import {useValidationContext} from "@/app/input-field/form-state/contexts/ValidationContext";
@@ -31,7 +31,7 @@ function LabeledTextInputWithValidation(
     pattern?: PatternValidation[];
   }
 ) {
-  const { errors, setError, clearError, getError } = useValidationContext();
+  const { setError, clearError, getError } = useValidationContext();
 
   const validate = (value: string): string => {
     if (required && value.trim() === '') {
@@ -58,17 +58,11 @@ function LabeledTextInputWithValidation(
     onChange(event);
     const errorMessage = validate(newValue);
     if (errorMessage) {
-      console.log('1');
       setError(label, errorMessage);
     } else {
-      console.log('2');
       clearError(label);
     }
   };
-
-  useEffect(() => {
-    console.log('errors',errors)
-  }, [errors])
 
   return (
     <>
