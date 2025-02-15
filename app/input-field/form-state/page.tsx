@@ -6,6 +6,8 @@ import LabeledTextInputWithValidation from "@/app/input-field/form-state/compone
 import {prefectures} from "@/data/prefectures";
 import LabeledSelectBoxWithValidation from "@/app/input-field/form-state/components/LabeledSelectBoxWithValidation";
 import {ValidationContextProvider} from "@/app/input-field/form-state/contexts/ValidationContext";
+import ValidationFormButton from "@/app/input-field/form-state/components/ValidationFormButton";
+
 
 function SelectBoxComponent() {
   const [name, setName] = useState<string>('');
@@ -98,7 +100,7 @@ function SelectBoxComponent() {
               />
             </div>
             <div style={{marginTop: '0.5rem'}}>
-              <button type="submit">SUBMIT</button>
+              <ValidationFormButton type="submit" text="送信"/>
             </div>
           </form>
         </ValidationContextProvider>

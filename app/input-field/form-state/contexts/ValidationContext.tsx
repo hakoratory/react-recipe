@@ -1,6 +1,6 @@
 import React, {createContext, ReactNode, useContext, useState} from "react";
 
-type ValidationError = { [key: string]: string };
+type ValidationError = { key: string; message: string };
 type ValidationErrors = Array<ValidationError>;
 
 type ValidationContextType = {
@@ -21,23 +21,20 @@ export const ValidationContextProvider: React.FC<{ children: ReactNode }> = ({ c
   const [errors, setErrors] = useState<ValidationErrors>([]);
 
   const setError = (field: string, message: string) => {
-    console.log(field, message);
     setErrors(prev => {
-      const filteredErrors = prev.filter(err => !(field in err));
-      const newError: ValidationError = { [field]: message };
+      const filteredErrors = prev.filter(err => err.key !== field);
+      const newError: ValidationError = { key: field, message: message };
       const updatedErrors: ValidationErrors = [...filteredErrors, newError];
       return updatedErrors;
     });
   };
 
   const clearError = (field: string) => {
-    setErrors(prev => prev.filter(err => !err[field]));
+    setErrors(prev => prev.filter(err => err.key !== field));
   };
 
-  const getError = (field: string): ValidationError | undefined => {  // 追加
-    console.log('1', field);
-    const errorObj = errors.find(err => field in err);
-    return errorObj ? errorObj : undefined;
+  const getError = (field: string): ValidationError | undefined => {
+    return errors.find(err => err.key === field);
   };
 
   return (
