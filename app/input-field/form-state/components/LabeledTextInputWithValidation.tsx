@@ -1,6 +1,7 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import LabeledTextInput from "@/app/input-field/select-box-component/components/LabeledTextInput";
 import ErrorMessage from "@/app/input-field/select-box-component/components/ErrorMessage";
+import {useValidationContext} from "@/app/input-field/form-state/contexts/ValidationContext";
 
 interface PatternValidation {
   regex: RegExp;
@@ -30,7 +31,7 @@ function LabeledTextInputWithValidation(
     pattern?: PatternValidation[];
   }
 ) {
-  const [error, setError] = useState<string>('');
+  const { errors, setError, clearError, getError } = useValidationContext();
 
   const validate = (value: string): string => {
     if (required && value.trim() === '') {
@@ -56,8 +57,18 @@ function LabeledTextInputWithValidation(
     const newValue = event.target.value;
     onChange(event);
     const errorMessage = validate(newValue);
-    setError(errorMessage);
+    if (errorMessage) {
+      console.log('1');
+      setError(label, errorMessage);
+    } else {
+      console.log('2');
+      clearError(label);
+    }
   };
+
+  useEffect(() => {
+    console.log('errors',errors)
+  }, [errors])
 
   return (
     <>
@@ -69,7 +80,7 @@ function LabeledTextInputWithValidation(
         placeholder={placeholder}
       />
       <div style={{color: 'red', fontSize: '1rem', minHeight: '1.5rem', marginTop: '0.5rem'}}>
-        <ErrorMessage text={error}/>
+        <ErrorMessage text={getError(label)?.message ?? ''} />
       </div>
     </>
   )
