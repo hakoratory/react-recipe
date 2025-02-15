@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useState} from "react";
-import ErrorMessage from "@/app/input-field/select-box-component/components/ErrorMessage";
+import ErrorMessage from "@/app/input-field/form-state/components/ErrorMessage";
 import {Option} from "@/app/input-field/form-state/components/SelectBox";
 import LabeledSelectBox from "@/app/input-field/form-state/components/LabeledSelectBox";
 

@@ -1,4 +1,4 @@
-import Label from "@/app/input-field/select-box-component/components/Label";
+import Label from "@/app/input-field/form-state/components/Label";
 import React from "react";
 import SelectBox, {SelectBoxProps} from "@/app/input-field/form-state/components/SelectBox";
 

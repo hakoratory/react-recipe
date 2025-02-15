@@ -1,6 +1,6 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
-import LabeledTextInput from "@/app/input-field/select-box-component/components/LabeledTextInput";
-import ErrorMessage from "@/app/input-field/select-box-component/components/ErrorMessage";
+import React, {ChangeEvent, useEffect} from "react";
+import LabeledTextInput from "@/app/input-field/form-state/components/LabeledTextInput";
+import ErrorMessage from "@/app/input-field/form-state/components/ErrorMessage";
 import {useValidationContext} from "@/app/input-field/form-state/contexts/ValidationContext";
 
 interface PatternValidation {

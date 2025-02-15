@@ -1,8 +1,8 @@
 'use client'
 
-import React, {useState, ChangeEvent, FormEvent, createContext, ReactNode, useContext} from "react";
+import React, {useState, ChangeEvent, FormEvent} from "react";
 import './style.css'
-import LabeledTextInputWithValidation from "@/app/input-field/select-box-component/components/LabeledTextInputWithValidation";
+import LabeledTextInputWithValidation from "@/app/input-field/form-state/components/LabeledTextInputWithValidation";
 import {prefectures} from "@/data/prefectures";
 import LabeledSelectBoxWithValidation from "@/app/input-field/form-state/components/LabeledSelectBoxWithValidation";
 import {ValidationContextProvider} from "@/app/input-field/form-state/contexts/ValidationContext";
