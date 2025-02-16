@@ -9,7 +9,7 @@ import {ValidationContextProvider} from "@/app/input-field/form-state/contexts/V
 import ValidationFormButton from "@/app/input-field/form-state/components/ValidationFormButton";
 
 
-function SelectBoxComponent() {
+function FormState() {
   const [name, setName] = useState<string>('');
   const [nameKana, setNameKana] = useState<string>('');
   const [postalCode, setPostalCode] = useState<string>('');
@@ -109,4 +109,4 @@ function SelectBoxComponent() {
   );
 }
 
-export default SelectBoxComponent;
+export default FormState;
